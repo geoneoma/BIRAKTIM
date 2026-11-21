@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nefes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EDF5F6;--surface:#fff;--ink:#0F2E3B;--muted:#5B7581;--mint:#1FA784;--mint-soft:#D6F0E8;--amber:#B7710F;--amber-soft:#FBEBCB;--line:#D3E3E7;--on-mint:#fff;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1E27;--surface:#12303C;--ink:#E6F3F5;--muted:#8FAAB4;--mint:#4FD3AE;--mint-soft:#14403A;--amber:#F2B340;--amber-soft:#3A2F14;--line:#1F4250;--on-mint:#06241C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1E27;--surface:#12303C;--ink:#E6F3F5;--muted:#8FAAB4;--mint:#4FD3AE;--mint-soft:#14403A;--amber:#F2B340;--amber-soft:#3A2F14;--line:#1F4250;--on-mint:#06241C;color-scheme:dark}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Figtree,system-ui,sans-serif}
+h1,h2,h3,.disp{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;margin:0}
+main{max-width:480px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:14px}
+header{display:flex;justify-content:space-between;align-items:center;padding:4px 2px}
+header h1{font-size:22px;font-weight:800;letter-spacing:-.01em}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--mint);outline-offset:2px}
+.ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:6px 14px;color:var(--muted)}
+.card{background:var(--surface);border-radius:24px;padding:20px}
+.hero{display:grid;justify-items:center;gap:8px;padding:24px 20px 20px}
+.ring{position:relative;width:240px;height:240px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .tr{stroke:var(--line)}
+.ring .pg{stroke:var(--mint);transition:stroke-dashoffset .8s ease}
+.ring .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.days{font:800 76px/1 "Bricolage Grotesque",Figtree,sans-serif;letter-spacing:-.04em}
+.dl{color:var(--muted);font-weight:500;margin-top:2px}
+.clock{font:600 17px/1.2 "Bricolage Grotesque",Figtree,sans-serif;font-variant-numeric:tabular-nums;margin-top:10px}
+.next{color:var(--muted);text-align:center;font-size:14px;max-width:30ch}
+.next b{color:var(--ink);font-weight:600}
+.check{width:100%;border:0;border-radius:20px;padding:18px;background:var(--mint);color:var(--on-mint);font:700 20px "Bricolage Grotesque",Figtree,sans-serif}
+.check.done{background:var(--mint-soft);color:var(--mint)}
+.week{display:flex;justify-content:space-between;margin-top:14px}
+.wd{display:grid;justify-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);display:grid;place-content:center;font-size:14px;color:transparent}
+.dot.on{background:var(--mint);border-color:var(--mint);color:var(--on-mint)}
+.dot.today{border-color:var(--ink)}
+.dot.pre{opacity:.35}
+.undo{background:none;border:0;color:var(--muted);text-decoration:underline;padding:8px 0 0;font-size:14px}
+.streak{margin:10px 0 0;color:var(--muted);font-size:14px}
+.money{background:var(--amber-soft)}
+.money .lbl{color:var(--amber);font-weight:600}
+.money .big{font:800 52px/1.05 "Bricolage Grotesque",Figtree,sans-serif;letter-spacing:-.03em;color:var(--amber);margin:4px 0 6px}
+.money p{margin:0;color:var(--ink);font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat .n{font:800 30px/1.1 "Bricolage Grotesque",Figtree,sans-serif;letter-spacing:-.02em}
+.stat .l{color:var(--muted);font-size:14px;margin-top:4px}
+.stat{padding:18px}
+.note h2{font-size:18px;margin-bottom:8px}
+.note p{margin:0;font-size:17px;line-height:1.55}
+.ms h2{font-size:20px;margin-bottom:4px}
+.ms>p{color:var(--muted);margin:0 0 8px;font-size:14px}
+.ml{list-style:none;margin:0;padding:0}
+.ml li{display:grid;grid-template-columns:28px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.mk{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);margin-top:2px;display:grid;place-content:center;font-size:13px;color:transparent}
+.ml li.done .mk{background:var(--mint);border-color:var(--mint);color:var(--on-mint)}
+.ml li.nx .mk{border-color:var(--mint)}
+.ml li.fu{opacity:.55}
+.ml h3{font-size:16px;font-weight:700}
+.ml p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.ml .when{font-size:13px;color:var(--mint);font-weight:600;margin-top:4px}
+.overlay{position:fixed;inset:0;background:rgba(6,20,27,.55);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.overlay.open{display:flex}
+.sheet{background:var(--surface);width:100%;max-width:480px;border-radius:28px 28px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;max-height:92vh;overflow:auto}
+.sheet h2{font-size:24px}
+.sheet p{margin:0;color:var(--muted);font-size:15px}
+label{display:grid;gap:6px;font-weight:600;font-size:14px}
+input{font:inherit;padding:12px 14px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.save{border:0;border-radius:16px;padding:15px;background:var(--mint);color:var(--on-mint);font:700 18px "Bricolage Grotesque",Figtree,sans-serif}
+.danger{background:none;border:0;color:var(--muted);text-decoration:underline;padding:6px}
+.wrapx{overflow-x:auto}
+@media (prefers-reduced-motion:reduce){.ring .pg{transition:none}}
+</style>
+</head>
+<body>
+<main id="app" aria-live="off">
+  <header><h1>Nefes</h1><button class="ghost" id="openSet">Ayarlar</button></header>
+
+  <section class="card hero" aria-label="Sigarasız geçen süre">
+    <div class="ring">
+      <svg viewBox="0 0 240 240" aria-hidden="true"><circle class="tr" cx="120" cy="120" r="104"/><circle class="pg" id="pg" cx="120" cy="120" r="104" stroke-dasharray="653.5" stroke-dashoffset="653.5"/></svg>
+      <div class="mid"><div class="days" id="days">0</div><div class="dl" id="dl">gün</div><div class="clock" id="clock">00:00:00</div></div>
+    </div>
+    <p class="next" id="next"></p>
+  </section>
+
+  <section class="card">
+    <button class="check" id="check">Bugün içmedim</button>
+    <div class="week" id="week"></div>
+    <p class="streak" id="streak"></p>
+    <button class="undo" id="undo" hidden>Bugünkü kaydı geri al</button>
+  </section>
+
+  <section class="card money">
+    <div class="lbl">Cebinde kalan para</div>
+    <div class="big" id="saved">0 ₺</div>
+    <p id="moneyNote"></p>
+  </section>
+
+  <section class="two">
+    <div class="card stat"><div class="n" id="cigs">0</div><div class="l">içilmeyen sigara</div></div>
+    <div class="card stat"><div class="n" id="life">0</div><div class="l">geri kazanılan ömür</div></div>
+  </section>
+
+  <section class="card note"><h2>Bugünün hatırlatması</h2><p id="note"></p></section>
+
+  <section class="card ms">
+    <h2>Kilometre taşları</h2>
+    <p>Vücudun bırakmaya şöyle karşılık verir. Süreler genel bilimsel tahminlerdir, kişiden kişiye değişir.</p>
+    <ul class="ml" id="ml"></ul>
+  </section>
+</main>
+
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-labelledby="sh">
+  <div class="sheet">
+    <h2 id="sh">Yolculuğunu başlat</h2>
+    <p id="shp">Bıraktığın anı ve eski alışkanlığını gir. Hesapların hepsi bunlara göre yapılır.</p>
+    <label>Sigarayı bıraktığın an<input type="datetime-local" id="fQuit"></label>
+    <div class="row">
+      <label>Paket fiyatı (₺)<input type="number" id="fPack" min="0" step="0.5" inputmode="decimal"></label>
+      <label>Günde kaç sigara<input type="number" id="fCigs" min="1" step="1" inputmode="numeric"></label>
+    </div>
+    <label>Günlük hatırlatma saati<input type="time" id="fNt"></label>
+    <button class="save" id="save">Kaydet</button>
+    <button class="danger" id="reset" hidden>Sayacı bugünden yeniden başlat</button>
+    <button class="danger" id="close" hidden>Vazgeç</button>
+  </div>
+</div>
+
+<script>
+(function(){
+var KEY="nefes-v1",mem=null;
+function load(){try{var s=localStorage.getItem(KEY);if(s)return JSON.parse(s)}catch(e){}return mem}
+function store(){mem=S;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+var S=load();
+var $=function(i){return document.getElementById(i)};
+var MIN=6e4,H=36e5,D=864e5;
+var MS=[
+[20*MIN,"20 dakika","Kalp atışın ve tansiyonun normale dönmeye başlar."],
+[8*H,"8 saat","Kandaki karbonmonoksit düzeyi yarıya iner, oksijen yükselir."],
+[24*H,"24 saat","Kalp krizi riski düşmeye başlar."],
+[48*H,"2 gün","Tat ve koku duyuların canlanır, sinir uçları kendini onarır."],
+[72*H,"3 gün","Nefes almak kolaylaşır, enerjin artar."],
+[14*D,"2 hafta","Dolaşım iyileşir, yürümek ve merdiven çıkmak rahatlar."],
+[30*D,"1 ay","Öksürük ve nefes darlığı azalmaya başlar, akciğer silleri toparlanır."],
+[90*D,"3 ay","Akciğer fonksiyonların belirgin biçimde artmış olabilir."],
+[270*D,"9 ay","Öksürük, sinüs sıkıntısı ve yorgunluk iyice azalır."],
+[365*D,"1 yıl","Koroner kalp hastalığı riskin sigara içene göre yaklaşık yarıya iner."],
+[5*365*D,"5 yıl","İnme riskin sigara içmeyenlerinkine yaklaşır."],
+[10*365*D,"10 yıl","Akciğer kanserinden ölüm riskin sigara içene göre yaklaşık yarıya iner."],
+[15*365*D,"15 yıl","Kalp hastalığı riskin hiç içmemiş biriyle benzer düzeye gelir."]
+];
+var NOTES=[
+"Sabah uyanınca ilk işin sigara aramak değil. Güne daha hafif başlıyorsun.",
+"Üzerindeki duman kokusu gitti. Saçın, ellerin, evin daha temiz kokuyor.",
+"Dışarıda “bir mola” için sigara aramak zorunda değilsin. Zamanın sana ait.",
+"Merdivenleri çıkarken nefesin eskisi kadar tükenmiyor.",
+"Cebindeki para bir hedefe dönüşebilir. Ne istediğini düşün.",
+"Tatlar daha net, yemek daha lezzetli. Beden bunu fark ediyor.",
+"Her isteği geçirdiğinde bir sonraki istek biraz daha zayıf geliyor.",
+"Uykuya daha kolay dalıyor, daha dinlenmiş uyanıyorsun.",
+"Cildin ve dişlerin sana teşekkür ediyor. Bu sessiz bir kazanç.",
+"Bir şeyi bırakabildiğini kanıtladın. Aynı irade başka alanlarda da çalışır.",
+"Sevdiklerin için de nefes alıyorsun. Etrafındakiler daha temiz hava soluyor.",
+"Bugün de seçim yaptın: içmemek. Bu seçim her gün biraz daha kolaylaşıyor."
+];
+function pad(n){return n<10?"0"+n:""+n}
+function fmtMoney(v){return Math.floor(v).toLocaleString("tr-TR")+" ₺"}
+function dkey(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function span(ms){var d=Math.floor(ms/D),h=Math.floor(ms%D/H),m=Math.floor(ms%H/MIN);
+ if(d>=365){var y=Math.floor(d/365),r=d%365;return y+" yıl"+(r?" "+r+" gün":"")}
+ if(d>0)return d+" gün"+(h?" "+h+" saat":"");
+ if(h>0)return h+" saat"+(m?" "+m+" dakika":"");
+ return Math.max(m,1)+" dakika"}
+function openSheet(first){
+ var q=S?new Date(S.quit):new Date();
+ var off=q.getTimezoneOffset()*MIN;
+ $("fQuit").value=new Date(q.getTime()-off).toISOString().slice(0,16);
+ $("fPack").value=S?S.pack:100;
+ $("fCigs").value=S?S.cigs:20;
+ $("fNt").value=(S&&S.nt)||"20:00";
+ $("sh").textContent=first?"Yolculuğunu başlat":"Ayarlar";
+ $("shp").textContent=first?"Bıraktığın anı ve eski alışkanlığını gir. Hesapların hepsi bunlara göre yapılır.":"Bilgilerini güncelle. Kaydettiğinde hesaplar yenilenir.";
+ $("reset").hidden=first;$("close").hidden=first;
+ $("ov").classList.add("open");
+}
+$("openSet").onclick=function(){openSheet(!S)};
+$("close").onclick=function(){$("ov").classList.remove("open")};
+$("save").onclick=function(){
+ var q=new Date($("fQuit").value),p=parseFloat($("fPack").value),c=parseInt($("fCigs").value,10);
+ if(isNaN(q.getTime())||q.getTime()>Date.now()){$("fQuit").focus();$("shp").textContent="Bırakma anı geçmişte olmalı. Tarihi ve saati kontrol et.";return}
+ if(isNaN(p)||p<0){$("fPack").focus();$("shp").textContent="Paket fiyatını sayı olarak gir.";return}
+ if(isNaN(c)||c<1){$("fCigs").focus();$("shp").textContent="Günde içtiğin sigara sayısını gir, en az 1.";return}
+ S={quit:q.toISOString(),pack:p,cigs:c,checks:(S&&S.checks)||[],nt:$("fNt").value||"20:00"};store();notif();
+ $("ov").classList.remove("open");render();
+};
+$("reset").onclick=function(){
+ if(confirm("Sayaç şu andan başlayacak. Devam edilsin mi?")){
+  S.quit=new Date().toISOString();store();$("ov").classList.remove("open");render();}
+};
+$("check").onclick=function(){
+ var k=dkey(new Date());
+ if(S.checks.indexOf(k)<0){S.checks.push(k);store();render()}
+};
+$("undo").onclick=function(){
+ var k=dkey(new Date());S.checks=S.checks.filter(function(x){return x!==k});store();render();
+};
+function streak(){
+ var set={};S.checks.forEach(function(k){set[k]=1});
+ var d=new Date();if(!set[dkey(d)])d.setDate(d.getDate()-1);
+ var n=0;while(set[dkey(d)]){n++;d.setDate(d.getDate()-1)}return n;
+}
+function render(){
+ if(!S){openSheet(true);return}
+ var now=Date.now(),q=new Date(S.quit).getTime(),el=Math.max(0,now-q);
+ var days=Math.floor(el/D);
+ $("days").textContent=days;$("dl").textContent=days===1?"gün sigarasız":"gün sigarasız";
+ // next milestone and ring
+ var ni=-1;for(var i=0;i<MS.length;i++){if(el<MS[i][0]){ni=i;break}}
+ var circ=653.5,prog=1;
+ if(ni>=0){var a=ni?MS[ni-1][0]:0,b=MS[ni][0];prog=(el-a)/(b-a);
+  $("next").innerHTML="Sıradaki taş: <b>"+MS[ni][1]+"</b>, "+span(MS[ni][0]-el)+" sonra.";}
+ else $("next").innerHTML="<b>Tüm taşları geçtin.</b> Bu başarı sana ait.";
+ $("pg").style.strokeDashoffset=circ*(1-Math.min(1,Math.max(0.02,prog)));
+ var perDay=S.cigs/20*S.pack,saved=el/D*perDay;
+ $("saved").textContent=fmtMoney(saved);
+ var perMonth=perDay*30,perYear=perDay*365;
+ $("moneyNote").textContent="Günde "+fmtMoney(perDay)+", ayda "+fmtMoney(perMonth)+", yılda "+fmtMoney(perYear)+" biriktiriyorsun.";
+ $("cigs").textContent=Math.floor(el/D*S.cigs).toLocaleString("tr-TR");
+ $("life").textContent=span(el/D*S.cigs*11*MIN);
+ // check-in
+ var tk=dkey(new Date()),done=S.checks.indexOf(tk)>=0;
+ var b=$("check");b.className="check"+(done?" done":"");
+ b.textContent=done?"Bugün kayıtlı. Aferin sana":"Bugün içmedim";
+ b.disabled=done;$("undo").hidden=!done;
+ var st=streak();
+ $("streak").textContent=st>0?st+" günlük kayıt serin var.":"Her gün bir kez kaydet, serin başlasın.";
+ var names=["Pz","Pt","Sa","Ça","Pe","Cu","Ct"],w="";
+ for(var j=6;j>=0;j--){var d=new Date();d.setDate(d.getDate()-j);var k=dkey(d);
+  var on=S.checks.indexOf(k)>=0,pre=d.getTime()+D<q;
+  w+='<div class="wd"><div class="dot'+(on?" on":"")+(j===0?" today":"")+(pre?" pre":"")+'">✓</div>'+names[d.getDay()]+"</div>";}
+ $("week").innerHTML=w;
+ $("note").textContent=NOTES[(Math.floor(now/D)+days)%NOTES.length];
+ var h="";
+ MS.forEach(function(m,idx){
+  var isDone=el>=m[0],isNx=idx===ni;
+  h+='<li class="'+(isDone?"done":isNx?"nx":"fu")+'"><span class="mk">✓</span><div><h3>'+m[1]+"</h3><p>"+m[2]+"</p>"+
+   (isNx?'<div class="when">'+span(m[0]-el)+" kaldı</div>":isDone?'<div class="when">Başardın</div>':"")+"</div></li>";
+ });
+ $("ml").innerHTML=h;
+ updClock();
+}
+function updClock(){
+ if(!S)return;
+ var el=Math.max(0,Date.now()-new Date(S.quit).getTime());
+ var h=Math.floor(el%D/H),m=Math.floor(el%H/MIN),s=Math.floor(el%MIN/1000);
+ $("clock").textContent=pad(h)+":"+pad(m)+":"+pad(s);
+}
+var LN=window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications;
+function notif(){
+ if(!LN||!S)return;
+ var t=(S.nt||"20:00").split(":");
+ LN.checkPermissions().then(function(p){return p.display==="granted"?p:LN.requestPermissions()}).then(function(p){
+  if(p.display!=="granted")return;
+  return LN.cancel({notifications:[{id:1}]}).then(function(){
+   return LN.schedule({notifications:[{id:1,title:"Nefes",body:"Bugün de sigarasız geçti mi? Gününü işaretlemeyi unutma.",schedule:{on:{hour:parseInt(t[0],10),minute:parseInt(t[1],10)},allowWhileIdle:true}}]});
+  });
+ }).catch(function(){});
+}
+notif();
+setInterval(updClock,1000);
+setInterval(render,60000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden)render()});
+render();
+})();
+</script>
+</body>
+</html>
